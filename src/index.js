@@ -27,9 +27,6 @@ const SUB_PATH_START = '{',
  * sub-paths will be parsed and replaced by results in source path
  */
 class notPath {
-	constructor() {
-		return this;
-	}
 	/*
 		input ':{::helperVal}.sub'
 		return ::helperVal
@@ -41,7 +38,7 @@ class notPath {
 	 * @param {string} path path in string notation
 	 * @return {string|null} subpath or null if no sub path were found
 	 */
-	findNextSubPath(path) {
+	static findNextSubPath(path) {
 		let subPath = '',
 			find = false;
 		for (let i = 0; i < path.length; i++) {
@@ -67,7 +64,7 @@ class notPath {
 	 * @return {string} parsed path
 	 */
 
-	replaceSubPath(path, sub, parsed) {
+	static replaceSubPath(path, sub, parsed) {
 		let subf = SUB_PATH_START + sub + SUB_PATH_END,
 			i = 0;
 		while ((path.indexOf(subf) > -1) && i < MAX_DEEP) {
@@ -84,7 +81,7 @@ class notPath {
 	 * @param {object} helpers helpers
 	 * @return {string} parsed path
 	 */
-	parseSubs(path, item, helpers) {
+	static parseSubs(path, item, helpers) {
 		let subPath = this.findNextSubPath(path),
 			subPathParsed, i = 0;
 		while (subPath) {
@@ -106,7 +103,7 @@ class notPath {
 	 * @param {object} helpers helpers object
 	 */
 
-	get(path, item, helpers) {
+	static get(path, item, helpers) {
 		switch (path) {
 		case PATH_START_OBJECT:
 			return item;
@@ -125,7 +122,7 @@ class notPath {
 	 * @param {any} attrValue value we want to assign
 	 */
 
-	set(path, item, helpers, attrValue) {
+	static set(path, item, helpers, attrValue) {
 		if (arguments.length === 3) {
 			attrValue = helpers;
 			helpers = undefined;
@@ -134,20 +131,15 @@ class notPath {
 			subPathParsed,
 			i = 0;
 		while (subPath) {
-
 			subPathParsed = this.getValueByPath(subPath.indexOf(PATH_START_HELPERS) > -1 ? helpers : item, subPath, item, helpers);
-
 			path = this.replaceSubPath(path, subPath, subPathParsed);
-
 			if (i > MAX_DEEP) {
 				break;
 			}
 			subPath = this.findNextSubPath(path);
 			i++;
 		}
-
 		this.setValueByPath(item, path, attrValue);
-
 		if (item.isRecord && this.normilizePath(path).length > 1 && item.__isActive) {
 			item.trigger('change', item, path, attrValue);
 		}
@@ -160,7 +152,7 @@ class notPath {
 	 * @param {object} helpers helpers object
 	 */
 
-	unset(path, item, helpers) {
+	static unset(path, item, helpers) {
 		this.set(path, item, helpers, null);
 	}
 
@@ -172,13 +164,13 @@ class notPath {
 	 * @return {string|number} parsed step key
 	 */
 
-	parsePathStep(step, item, helper) {
+	static parsePathStep(step, item, helper) {
 		let rStep = null;
 		if (step.indexOf(PATH_START_HELPERS) === 0 && helper) {
 			rStep = step.replace(PATH_START_HELPERS, '');
 			if (rStep.indexOf(FUNCTION_MARKER) === rStep.length - 2) {
 				rStep = rStep.replace(FUNCTION_MARKER, '');
-				if (helper.hasOwnProperty(rStep)) {
+				if (Object.prototype.hasOwnProperty.call(helper, rStep)) {
 					return helper[rStep](item, undefined);
 				}
 			} else {
@@ -189,7 +181,7 @@ class notPath {
 				rStep = step.replace(PATH_START_OBJECT, '');
 				if (rStep.indexOf(FUNCTION_MARKER) === rStep.length - 2) {
 					rStep = rStep.replace(FUNCTION_MARKER, '');
-					if (item.hasOwnProperty(rStep)) {
+					if (Object.prototype.hasOwnProperty.call(item, rStep)) {
 						return item[rStep](item, undefined);
 					}
 				} else {
@@ -211,7 +203,7 @@ class notPath {
 	 * @param {object} helper helper object
 	 * @return {array} parsed path
 	 **/
-	parsePath(path, item, helper) {
+	static parsePath(path, item, helper) {
 		if (!Array.isArray(path)) {
 			path = path.split(PATH_SPLIT);
 		}
@@ -227,7 +219,7 @@ class notPath {
 	 * @return {array} path in array notation
 	 */
 
-	normilizePath(path) {
+	static normilizePath(path) {
 		if (Array.isArray(path)) {
 			return path;
 		} else {
@@ -254,7 +246,7 @@ class notPath {
 	 * @return {boolean} if we succeed
 	 */
 
-	ifFullSubPath(big, small) {
+	static ifFullSubPath(big, small) {
 		if (big.length < small.length) {
 			return false;
 		}
@@ -275,7 +267,7 @@ class notPath {
 	 * @param {helpers} object  supporting helpers
 	 */
 
-	getValueByPath(object, attrPath, item, helpers) {
+	static getValueByPath(object, attrPath, item, helpers) {
 		attrPath = this.normilizePath(attrPath);
 		let attrName = attrPath.shift(),
 			isFunction = attrName.indexOf(FUNCTION_MARKER) > -1;
@@ -305,11 +297,11 @@ class notPath {
 	 * @param {any} attrValue  value to assign
 	 */
 
-	setValueByPath(object, attrPath, attrValue) {
+	static setValueByPath(object, attrPath, attrValue) {
 		attrPath = this.normilizePath(attrPath);
 		let attrName = attrPath.shift();
 		if (attrPath.length > 0) {
-			if (!object.hasOwnProperty(attrName)) {
+			if (!Object.prototype.hasOwnProperty.call(object, attrName)) {
 				object[attrName] = {};
 			}
 			this.setValueByPath(object[attrName], attrPath, attrValue);
@@ -324,10 +316,10 @@ class notPath {
 	* @return {string} composite path
 	*/
 
-	join() {
+	static join() {
 		let args = Array.prototype.slice.call(arguments);
 		return args.join(PATH_SPLIT);
 	}
 }
 
-module.exports = new notPath();
+module.exports = notPath;

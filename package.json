@@ -1,6 +1,6 @@
 {
     "name": "not-path",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "not-* family module for object properties access",
     "main": "index.js",
     "scripts": {
@@ -25,13 +25,12 @@
         "url": "https://github.com/interrupter/not-path/issues"
     },
     "homepage": "https://github.com/interrupter/not-path#readme",
-    "dependencies": {},
     "devDependencies": {
         "chai": "*",
         "eslint": "*",
         "ink-docstrap": "^1.3.2",
         "istanbul": "*",
-        "jsdoc": "^3.5.5",
+        "jsdoc": "^3.6.6",
         "mocha": "*"
     }
 }
