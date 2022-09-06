@@ -15,7 +15,7 @@
     },
     "extends": "eslint:recommended",
     "rules": {
-        "indent": ["error"],
+        "indent": ["error", { "SwitchCase": 1 }],
         "linebreak-style": ["error", "unix"],
         "semi": ["error", "always"],
         "no-console": [0],

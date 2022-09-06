@@ -27,6 +27,28 @@ const SUB_PATH_START = "{",
  * sub-paths will be parsed and replaced by results in source path
  */
 class notPath {
+    static get SUB_PATH_START() {
+        return SUB_PATH_START;
+    }
+    static get SUB_PATH_END() {
+        return SUB_PATH_END;
+    }
+    static get PATH_SPLIT() {
+        return PATH_SPLIT;
+    }
+    static get PATH_START_OBJECT() {
+        return PATH_START_OBJECT;
+    }
+    static get PATH_START_HELPERS() {
+        return PATH_START_HELPERS;
+    }
+    static get FUNCTION_MARKER() {
+        return FUNCTION_MARKER;
+    }
+    static get MAX_DEEP() {
+        return MAX_DEEP;
+    }
+
     /*
 		input ':{::helperVal}.sub'
 		return ::helperVal
