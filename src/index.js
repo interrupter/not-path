@@ -149,10 +149,10 @@ class notPath {
 
     /**
      * Set property value
-     * @param {string} path path to property
-     * @param {object} item item object
-     * @param {object} helpers helpers object
-     * @param {any} attrValue value we want to assign
+     * @param {string}  path path to property
+     * @param {object}  item item object
+     * @param {object}  helpers         helpers object if 4 arguments or attrValue if only 3 provided
+     * @param {any}     [attrValue]     value we want to assign
      */
 
     static set(path, item, helpers, attrValue) {
