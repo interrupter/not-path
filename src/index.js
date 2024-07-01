@@ -128,10 +128,10 @@ class notPath {
      * Get property value
      * @param {string} path path to property
      * @param {object} item item object
-     * @param {object} helpers helpers object
+     * @param {object} [helpers] helpers object
      */
 
-    static get(path, item, helpers) {
+    static get(path, item, helpers = undefined) {
         switch (path) {
             case PATH_START_OBJECT:
                 return item;
@@ -155,7 +155,7 @@ class notPath {
      * @param {any}     [attrValue]     value we want to assign
      */
 
-    static set(path, item, helpers, attrValue) {
+    static set(path, item, helpers, attrValue = undefined) {
         if (arguments.length === 3) {
             attrValue = helpers;
             helpers = undefined;
