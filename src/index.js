@@ -194,8 +194,36 @@ class notPath {
      * @param {object} helpers helpers object
      */
 
-    static unset(path, item, helpers) {
-        this.set(path, item, helpers, null);
+    static unset(path, item, helpers, emptyValue = null) {
+        this.set(path, item, helpers, emptyValue);
+    }
+
+    /**
+     * Delete target property
+     * @param {string} path path to property
+     * @param {object} item item object
+     * @param {object} helpers helpers object
+     */
+
+    static delete(path, item, helpers) {
+        switch (path) {
+            case PATH_START_OBJECT:
+                return item;
+            case PATH_START_HELPERS:
+                return helpers;
+        }        
+        path = this.parseSubs(path, item, helpers);
+        const attrPath = this.normilizePath(path);
+        if (attrPath.length === 0){
+            return;
+        }
+        const [keyToDelete] = attrPath.splice(-1);
+        const targetParentObject = this.get(attrPath.join(PATH_SPLIT), attrPath, helpers);
+        if(targetParentObject && Object.hasOwn(targetParentObject, keyToDelete)){
+            delete targetParentObject[keyToDelete];
+            this.set(attrPath.join(PATH_SPLIT), item, helpers,targetParentObject);
+        }
+
     }
 
     /**
@@ -303,10 +331,10 @@ class notPath {
     /**
      * Getter through third object
      * Path is parsed, no event triggering for notRecord
-     * @param {object} object object to be used as getter
+     * @param {object} object object to be used as source
      * @param {string|array} attrPath path to property
      * @param {object} item supporting data
-     * @param {helpers} object  supporting helpers
+     * @param {object} helpers  supporting helpers
      */
 
     static getValueByPath(object, attrPath, item, helpers) {
